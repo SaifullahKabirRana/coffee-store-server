@@ -49,20 +49,20 @@ async function run() {
       res.send(result);
     })
 
-    app.put('/coffee/:id', async(req, res) => {
+    app.put('/coffee/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updatedCoffee = req.body
       const coffee = {
         $set: {
-          name:updatedCoffee.name,
-          chef:updatedCoffee.chef, 
-          supplier:updatedCoffee.supplier, 
-          taste:updatedCoffee.taste, 
-          price:updatedCoffee.price, 
-          details:updatedCoffee.details, 
-          photo:updatedCoffee.photo
+          name: updatedCoffee.name,
+          chef: updatedCoffee.chef,
+          supplier: updatedCoffee.supplier,
+          taste: updatedCoffee.taste,
+          price: updatedCoffee.price,
+          details: updatedCoffee.details,
+          photo: updatedCoffee.photo
         }
       }
       const result = await coffeeCollection.updateOne(filter, coffee, options);
@@ -77,10 +77,23 @@ async function run() {
     })
 
     // user related apis
-    app.post('/user', async(req, res) => {
+    app.get('/user', async (req, res) => {
+      const cursor = userCollection.find();
+      const users = await cursor.toArray();
+      res.send(users);
+    })
+
+    app.post('/user', async (req, res) => {
       const user = req.body;
       console.log(user);
       const result = await userCollection.insertOne(user);
+      res.send(result);
+    })
+
+    app.delete('/user/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await userCollection.deleteOne(query);
       res.send(result);
     })
 
